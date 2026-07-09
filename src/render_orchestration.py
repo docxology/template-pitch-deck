@@ -99,7 +99,9 @@ def render_one_length(
     uncited = uncited_fact_slides(raw, repo_root)
     if uncited:
         titles = ", ".join(row["title"] or f"slide {row['index']}" for row in uncited)
-        raise DiligenceAuditFailure(f"[{length}] {len(uncited)} fact-bearing slide(s) with no source citation: {titles}")
+        raise DiligenceAuditFailure(
+            f"[{length}] {len(uncited)} fact-bearing slide(s) with no source citation: {titles}"
+        )
 
     resolved_deck = build_deck_content(raw, tokens, figures_dir=figures_dir)
     budgeted_deck = filter_deck_for_budget(resolved_deck, _BUDGETS[length])

@@ -19,7 +19,9 @@ from pathlib import Path
 #: Shared with `deck_tokens.py` (imported from here) — the one pattern both
 #: COUNTS.md readers use, so they can't silently diverge (red-team finding,
 #: 2026-07-09: a prior version had two independent copies of this regex).
-COUNTS_ROW_RE = re.compile(r"^\|\s*`(?P<name>[\w.]+)`\s*\|\s*(?P<tests>\d+)\s*\|\s*(?P<coverage>[\d.]+)\s*%\s*\|", re.MULTILINE)
+COUNTS_ROW_RE = re.compile(
+    r"^\|\s*`(?P<name>[\w.]+)`\s*\|\s*(?P<tests>\d+)\s*\|\s*(?P<coverage>[\d.]+)\s*%\s*\|", re.MULTILINE
+)
 
 
 def read_all_exemplar_coverage(repo_root: Path) -> list[tuple[str, int, float]]:

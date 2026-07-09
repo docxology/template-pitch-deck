@@ -109,7 +109,9 @@ def standalone_slide_markdown(
         f"[PDF](../../pdf/{pitch_subject}_pitch_{length}.pdf) · "
         f"[PPTX](../../pptx/{pitch_subject}_pitch_{length}.pptx)"
     )
-    lines.append(f"**Deck content source:** [manuscript/deck_content_{length}.yaml](../../../manuscript/deck_content_{length}.yaml)")
+    lines.append(
+        f"**Deck content source:** [manuscript/deck_content_{length}.yaml](../../../manuscript/deck_content_{length}.yaml)"
+    )
     lines.append("")
     lines.append(
         "*This page is generated — it exists so a QR code on the rendered slide "

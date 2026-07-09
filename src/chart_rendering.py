@@ -21,9 +21,7 @@ from typing import Any
 from infrastructure.rendering.slide_deck import DeckTheme
 
 
-def render_coverage_bar_chart(
-    plt: Any, theme: DeckTheme, rows: list[tuple[str, int, float]], output_path: Path
-) -> int:
+def render_coverage_bar_chart(plt: Any, theme: DeckTheme, rows: list[tuple[str, int, float]], output_path: Path) -> int:
     """Horizontal bar chart of per-exemplar coverage %. Returns the row count."""
     names = [name for name, _, _ in rows]
     coverages = [coverage for _, _, coverage in rows]
@@ -110,9 +108,7 @@ def render_test_count_vs_coverage_scatter(
     return len(rows)
 
 
-def render_infra_subpackage_donut(
-    plt: Any, theme: DeckTheme, rows: list[tuple[str, int]], output_path: Path
-) -> int:
+def render_infra_subpackage_donut(plt: Any, theme: DeckTheme, rows: list[tuple[str, int]], output_path: Path) -> int:
     """Donut chart of infrastructure/ subpackage sizes. Returns the subpackage row count."""
     top_n = 7
     top_rows = rows[:top_n]
