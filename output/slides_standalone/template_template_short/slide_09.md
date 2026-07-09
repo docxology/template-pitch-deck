@@ -3,7 +3,7 @@
 *Slide 9 of 11 — template_template pitch, short deck — kind: `content`*
 
 - This pitch deck (template_template_pitch_short.pdf) is its own exemplar in the same monorepo — it has its own source, tests, and citable identity, separate from the DOI of the project it pitches.
-- This deck's own DOI: not yet reserved — no Zenodo deposit on file for this deck.
+- This deck's own DOI: 10.5281/zenodo.21281509.
 - Every slide also carries a QR code to its own standalone, citable page — see the deep-linking mechanism described later in the medium and long versions of this deck.
 
 ---

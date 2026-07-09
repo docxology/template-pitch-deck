@@ -22,14 +22,12 @@ authors:
     corresponding: true
 
 # Consumed by: `infrastructure.publishing.publish_to_zenodo` (in `infrastructure/publishing/platforms.py`)
-# No DOI/publication record yet — this exemplar has not been published as a
-# standalone repo, and `github_repository` is deliberately left unset (setting
-# it flips the status_report's `github` row to "published" even though no such
-# repo exists yet — see infrastructure/publishing/status_report.py:214). Run
-# `uv run python -m infrastructure.publishing.status_report
-# --project projects/templates/template_pitch_deck --write` to (re)compile the
-# PUBLISHING-STATUS block honestly once a real Zenodo/GitHub release exists.
-publication: {}
+# Real Zenodo deposit + standalone GitHub repo, both published 2026-07-09 —
+# see the bottom of this file for the actual `publication:` block (a prior
+# release-tooling run appended a second `publication:` key here rather than
+# updating this one in place; YAML silently keeps only the last occurrence,
+# so the values below are the ones actually in effect — consolidated into one
+# block to avoid the confusing duplicate).
 
 keywords:
   - "pitch deck"
@@ -84,3 +82,8 @@ deck:
     highlight_1: "#B3131A"
     highlight_2: "#B3131A"
     highlight_3: "#B3131A"
+publication:
+  doi: "10.5281/zenodo.21281509"
+  version_doi: "10.5281/zenodo.21281510"
+  version_record: "https://zenodo.org/records/21281510"
+  github_repository: "docxology/template-pitch-deck"

@@ -55,14 +55,17 @@ def test_build_deck_tokens_exemplar_roster_lists_every_exemplar(repo_root):
     assert names == sorted(names)
 
 
-def test_build_deck_tokens_pitch_deck_doi_status_is_honest_when_unset(repo_root):
+def test_build_deck_tokens_pitch_deck_doi_status_reflects_real_state(repo_root):
+    """This deck's own config.yaml now carries a real, published Zenodo DOI
+    (reserved 2026-07-09) — the token must reflect that live state, matching
+    the empty-config behavior verified separately in
+    `test_read_own_deck_doi_status_honest_when_publication_block_empty`
+    (which uses a synthetic tmp_path fixture, independent of this project's
+    own current, real, mutable config)."""
     tokens = build_deck_tokens(repo_root)
     status = tokens["PITCH_DECK_DOI_STATUS"]
-    # As of this session template_pitch_deck's own config.yaml carries no DOI,
-    # so this must be the honest not-yet-reserved status, never a fabricated
-    # or placeholder-looking DOI string.
-    assert "not yet reserved" in status
-    assert "10." not in status
+    assert status.startswith("10.5281/zenodo.")
+    assert "not yet reserved" not in status
 
 
 def test_read_own_deck_doi_status_returns_real_doi_when_present(tmp_path):
