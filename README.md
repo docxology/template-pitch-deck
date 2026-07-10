@@ -1,20 +1,5 @@
 # Template: Pitch Deck
 
-> **This is a standalone, citable snapshot.** The canonical, actively-developed
-> home for this project is
-> [`projects/templates/template_pitch_deck/`](https://github.com/docxology/template/tree/main/projects/templates/template_pitch_deck)
-> in the [docxology/template](https://github.com/docxology/template) monorepo.
-> `src/` and `scripts/` here import from `infrastructure/rendering/{slide_deck,pptx_deck,mermaid_figure}.py`
-> and several other `infrastructure.*` modules that live only in that
-> monorepo — this standalone checkout is not independently `pip install`-able.
-> It exists so this project has its own citable GitHub identity
-> ([DOI 10.5281/zenodo.21281509](https://doi.org/10.5281/zenodo.21281509)),
-> its own release history, and a stable home for the rendered `output/`
-> artifacts (the actual PDF/PPTX decks and the per-slide standalone pages
-> every slide's QR code points to). Relative links below that point at
-> sibling exemplars (`../template_template/`, `../../AGENTS.md`) refer to
-> that monorepo's own structure and won't resolve from this checkout.
-
 Reproducible, validated pitch-deck generation — one token-resolved content
 source renders to six real artifacts: short/medium/long decks, each as both
 PDF and PPTX.
