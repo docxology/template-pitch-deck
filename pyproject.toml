@@ -24,8 +24,8 @@ dependencies = [
     # `execute_pipeline.py --core-only`) need them declared explicitly —
     # same pattern as `template_search_project`/`template_newspaper`.
     "reportlab>=4.0.0",
-    "pypdf>=6.12.0",
-    "Pillow>=10.0",
+    "pypdf>=6.15.0",
+    "Pillow>=12.3.0",
     # `infrastructure.rendering.slide_deck._draw_qr_code`/`pptx_deck._add_qr_code`
     # call `infrastructure.steganography.barcode_generators.generate_qr_code`
     # for the per-slide QR deep-links — same transitive-dependency situation
@@ -42,6 +42,8 @@ dev = [
     # Test fixtures build a real matplotlib figure to exercise the
     # `Slide.figure_path` embedding path (no-mocks policy).
     "matplotlib>=3.7.0",
+    # Property tests exercise all-length transactional audit combinations.
+    "hypothesis>=6.100.0",
 ]
 
 [tool.setuptools.packages.find]
@@ -53,6 +55,9 @@ testpaths = ["tests"]
 python_files = ["test_*.py"]
 python_functions = ["test_*"]
 addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: full deck rendering checks kept for release profiles",
+]
 
 [tool.coverage.run]
 source = ["src"]
