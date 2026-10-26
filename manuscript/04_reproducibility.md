@@ -9,6 +9,9 @@ only place a generation time is recorded is deck metadata, following the
 `STEGANOGRAPHY_DETERMINISTIC`-style convention already used elsewhere in this
 repository for reproducible builds.
 
+From the `docxology/template` monorepo root (this project's scripts and tests
+import `infrastructure.*`, which ships only there):
+
 ```bash
 uv run python projects/templates/template_pitch_deck/scripts/20_render_decks.py
 # → output/pdf/template_template_pitch_{short,medium,long}.pdf

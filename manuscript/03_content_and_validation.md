@@ -2,8 +2,9 @@
 
 ## The flagship pitch
 
-The shipped content pitches [`template_template`](../../template_template/) — this
-monorepo's autopoietic meta-project, which introspects the repository's own
+The shipped content pitches `projects/templates/template_template/` (monorepo-relative
+sibling path, not present in this standalone checkout) — the
+template monorepo's autopoietic meta-project, which introspects the repository's own
 architecture and regenerates its manuscript from live counts — to a
 meta-science and science-integrity audience. Every length follows the same
 arc: the problem (research communication and reproducibility are

@@ -30,10 +30,25 @@ pitches `template_template` as meta-science research infrastructure.
 Entry points come from the numbered scripts (run via `uv run`, consistent
 with the template workspace): `scripts/20_render_decks.py` (render) and
 `scripts/10_audit_deck_content.py` (content audit). Tests run with pytest
-(`tests/`); coverage configuration lives in `../pyproject.toml`. For exact
-invocation of the canonical monorepo pipeline stages, see the root monorepo
-documentation — this standalone checkout inherits workspace settings from
-the root `pyproject.toml`.
+(`tests/`); coverage configuration lives in `../pyproject.toml`.
+
+Both the scripts and the test suite import `infrastructure.*`
+(`src/deck_tokens.py`, `src/content_loader.py`, `src/infra_facts.py`,
+`src/render_orchestration.py`, `tests/conftest.py`), which ships only in the
+[`docxology/template`](https://github.com/docxology/template) monorepo.
+`tests/conftest.py` resolves the repo root via `src/paths.py::locate_repo_root`,
+which walks up from the project looking for a directory that contains both
+`infrastructure/` and `pyproject.toml` — so run the suite where that lookup
+succeeds: the monorepo's own `projects/templates/template_pitch_deck/tests/`
+(see [`../README.md`](../README.md) for the exact invocation), or this
+repository cloned *inside* a `docxology/template` checkout. With no
+`infrastructure/` anywhere above the project, neither the numbered scripts nor
+the test suite can run; the tracked `output/` artifacts come from the monorepo
+pipeline.
+
+This checkout has no workspace parent: `../pyproject.toml` is the uv root, so
+`uv lock`/`uv sync` run against this repo directly and `.venv/` is
+project-local.
 
 ## Maintenance
 

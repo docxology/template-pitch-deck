@@ -1,5 +1,7 @@
 # template_pitch_deck — exemplar pitch-deck generation project
-# Inherits workspace settings from the root pyproject.toml.
+# In the template monorepo this file inherits workspace settings from the root
+# pyproject.toml; in the standalone mirror (docxology/template-pitch-deck) it is
+# the uv root, and `infrastructure/` comes from the monorepo checkout.
 
 [build-system]
 requires = ["setuptools>=61.0"]
@@ -13,18 +15,18 @@ description = "Reproducible short/medium/long PDF+PPTX pitch decks — token-val
 authors = [{name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}]
 requires-python = ">=3.10"
 dependencies = [
-    "pyyaml>=6.0",
+    "pyyaml>=6.0.3",
     # `src/content_loader.py`/`src/render_orchestration.py` import
     # `infrastructure.rendering.slide_deck` — importing any single submodule
     # of `infrastructure.rendering` runs that package's `__init__.py`, which
     # eagerly imports the full PDF/DOCX/EPUB stack (including a Pillow
     # dependency several layers deep in `infrastructure/publishing/`).
     # Workspace mode picks these up transitively through the root repo's
-    # `rendering` optional group; project-local venvs (used by
+    # `rendering` optional group; project-local venvs (the monorepo's
     # `execute_pipeline.py --core-only`) need them declared explicitly —
     # same pattern as `template_search_project`/`template_newspaper`.
-    "reportlab>=4.0.0",
-    "pypdf>=6.15.0",
+    "reportlab>=5.0.0",
+    "pypdf>=6.20.0",
     "Pillow>=12.3.0",
     # `infrastructure.rendering.slide_deck._draw_qr_code`/`pptx_deck._add_qr_code`
     # call `infrastructure.steganography.barcode_generators.generate_qr_code`
@@ -37,13 +39,13 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=7.4.0",
-    "pytest-cov>=4.1.0",
+    "pytest>=9.0",
+    "pytest-cov>=7.0",
     # Test fixtures build a real matplotlib figure to exercise the
     # `Slide.figure_path` embedding path (no-mocks policy).
-    "matplotlib>=3.7.0",
+    "matplotlib>=3.10",
     # Property tests exercise all-length transactional audit combinations.
-    "hypothesis>=6.100.0",
+    "hypothesis>=6.150",
 ]
 
 [tool.setuptools.packages.find]
@@ -75,4 +77,6 @@ exclude_lines = [
 ]
 
 [tool.uv]
-# Inherits workspace settings from root pyproject.toml
+# Monorepo: workspace settings come from the root pyproject.toml.
+# Standalone mirror: no workspace parent — `uv lock`/`uv sync` run against this
+# file directly (`uv run --extra dev pytest tests/`).

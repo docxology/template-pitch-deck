@@ -28,9 +28,10 @@ a project-owned layout engine, because a slide deck — unlike a newspaper's
 column geometry — is a reusable output shape any future project can consume.
 
 `infrastructure/rendering/pptx_deck.render_pptx` builds the identical slide
-sequence with `python-pptx` (an opt-in dependency:
-`uv sync --group rendering-pptx`), matching title/section/content slide
-handling 1:1 with the PDF path. Both renderers are exercised by
+sequence with `python-pptx` (an opt-in dependency of the template monorepo:
+`uv sync --group rendering-pptx` from the `docxology/template` checkout root),
+matching title/section/content slide handling 1:1 with the PDF path. Both
+renderers are exercised by the monorepo's
 `tests/infra_tests/rendering/test_slide_deck.py` and
 `test_pptx_deck.py`, including a direct parity test that renders the same
 `DeckContent` through both paths and asserts the PDF page count equals the

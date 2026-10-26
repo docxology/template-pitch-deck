@@ -1,3 +1,6 @@
+# `source`/`artifact_path` values are relative to the `docxology/template`
+# monorepo checkout root; this standalone repository ships no `infrastructure/`
+# or `.github/` of its own.
 claims:
   - claim_id: short-slide-budget
     kind: number

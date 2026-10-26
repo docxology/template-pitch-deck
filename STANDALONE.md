@@ -40,7 +40,7 @@ uv run python scripts/audit/copy_exemplar.py \
   --new-name my_pitch_deck
 ```
 
-Fallback when the helper is unavailable:
+Fallback when the helper is unavailable (both paths monorepo-relative):
 
 ```bash
 rsync -a \

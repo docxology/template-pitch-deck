@@ -2,7 +2,10 @@
 
 Technical specification for the pitch-deck generation exemplar.
 
-**Location:** [`projects/templates/template_pitch_deck/`](.) — public canonical exemplar (`infrastructure.project.public_scope`).
+**Location:** [`projects/templates/template_pitch_deck/`](.) — public canonical exemplar
+(`infrastructure.project.public_scope`). This standalone repository root is that project
+directory; every command below runs from the `docxology/template` monorepo root, which is
+the checkout that owns `infrastructure/` and the sibling paths.
 
 ## Purpose
 

@@ -22,16 +22,18 @@ Project-scoped skill for the in-repo exemplar at
 ## Quick Reference
 
 ```bash
-# From the repository root
+# From the docxology/template monorepo root — the scripts and tests import
+# `infrastructure.*`, which ships only in that checkout.
 uv run python projects/templates/template_pitch_deck/scripts/10_audit_deck_content.py
 uv run python projects/templates/template_pitch_deck/scripts/15_generate_diagrams.py
 uv run python projects/templates/template_pitch_deck/scripts/20_render_decks.py
 uv run python projects/templates/template_pitch_deck/scripts/30_audit_diligence.py
 uv run pytest projects/templates/template_pitch_deck/tests --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90
+# Shared infra renderer suites (monorepo paths):
 uv run pytest tests/infra_tests/rendering/test_slide_deck.py tests/infra_tests/rendering/test_pptx_deck.py tests/infra_tests/rendering/test_mermaid_figure.py
 ```
 
-PPTX rendering needs the opt-in group: `uv sync --group rendering-pptx`.
+PPTX rendering needs the monorepo's opt-in group: `uv sync --group rendering-pptx`.
 
 ## Pitfalls
 
@@ -51,4 +53,4 @@ PPTX rendering needs the opt-in group: `uv sync --group rendering-pptx`.
 - README: [`README.md`](../../../README.md)
 - TODO: [`TODO.md`](../../../TODO.md)
 - Rendering primitives: `infrastructure/rendering/slide_deck.py`, `pptx_deck.py`, `mermaid_figure.py`
-- Exemplar roster: [`projects/AGENTS.md`](../../../../AGENTS.md)
+- Exemplar roster: `projects/AGENTS.md` (monorepo-relative path; not present in this standalone checkout)

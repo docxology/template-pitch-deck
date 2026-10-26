@@ -4,7 +4,10 @@ Reproducible, validated pitch-deck generation — one token-resolved content
 source renders to six real artifacts: short/medium/long decks, each as both
 PDF and PPTX.
 
-**Location:** git-tracked public exemplar at `projects/templates/template_pitch_deck/` in the public template checkout.
+**Location:** git-tracked public exemplar at `projects/templates/template_pitch_deck/`
+in the [`docxology/template`](https://github.com/docxology/template) checkout. This
+standalone repository is that directory published as its own repo — its root **is**
+the project directory, so `projects/templates/.../` paths below are monorepo-relative.
 
 ## When to use this template
 
@@ -13,13 +16,14 @@ stakeholder update treated as a build artifact — bound to live repository
 facts, validated for unresolved tokens and pitch-deck cliché, and
 regenerable byte-for-byte from source rather than hand-maintained in a
 proprietary slide tool. The flagship shipped content pitches
-[`template_template`](../template_template/) — this monorepo's own
+`projects/templates/template_template/` — the monorepo's own
 autopoietic meta-project — to a meta-science / science-integrity audience.
 
 If your research subject renders as a manuscript instead, start from
-[`template_code_project`](../template_code_project/) or
-[`template_template`](../template_template/). Full roster:
-[`projects/AGENTS.md`](../../AGENTS.md#permanent-canonical-exemplars).
+`projects/templates/template_code_project/` or
+`projects/templates/template_template/` (monorepo-relative sibling paths; not
+present in this standalone checkout). Full roster: `projects/AGENTS.md` in the
+monorepo.
 
 ## Publication and rendering
 
@@ -76,7 +80,9 @@ _Status legend: ✅ published (durable identifier recorded in `config.yaml`) · 
 
 ## Quick Start
 
-From the public template repo root:
+Both the scripts and the test suite import `infrastructure.*`, which ships in the
+[`docxology/template`](https://github.com/docxology/template) monorepo — not in this
+standalone repository. Run them from that checkout (paths are monorepo-relative):
 
 ```bash
 uv run python projects/templates/template_pitch_deck/scripts/10_audit_deck_content.py
@@ -91,7 +97,7 @@ uv run pytest projects/templates/template_pitch_deck/tests/ \
 ./run.sh --project templates/template_pitch_deck --pipeline --core-only
 ```
 
-PPTX rendering requires the opt-in dependency group: `uv sync --group rendering-pptx`. Without it, the render script still produces the three PDFs and logs a warning instead of failing.
+PPTX rendering requires the monorepo's opt-in dependency group: `uv sync --group rendering-pptx`. Without it, the render script still produces the three PDFs and logs a warning instead of failing.
 
 ## Directory Structure
 
@@ -116,5 +122,5 @@ PPTX rendering requires the opt-in dependency group: `uv sync --group rendering-
 
 - Forward backlog: [`TODO.md`](TODO.md).
 - Copy-and-customize config: [`manuscript/config.yaml.example`](manuscript/config.yaml.example).
-- Project validation: `uv run pytest projects/templates/template_pitch_deck/tests/ --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90`.
-- Repo drift validation: `uv run python scripts/audit/check_template_drift.py --strict`.
+- Project validation (monorepo root): `uv run pytest projects/templates/template_pitch_deck/tests/ --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90`.
+- Repo drift validation (monorepo root): `uv run python scripts/audit/check_template_drift.py --strict`.

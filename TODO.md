@@ -1,7 +1,8 @@
 # template_pitch_deck TODO
 
 This backlog is future-only. Completed validation and dated review evidence are preserved in
-[`docs/maintenance/exemplar-backlog-history.md`](../../../docs/maintenance/exemplar-backlog-history.md)
+the monorepo's `docs/maintenance/exemplar-backlog-history.md` (path relative to the
+`docxology/template` checkout root; not present in this standalone repository)
 or in source-owned generated receipts. Each active row must retain a stable ID, size, dependency,
 next action, proving artifact, acceptance command, and negative control; absence of an owner or external receipt
 keeps a capability blocked rather than silently promoting it.
