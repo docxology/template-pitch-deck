@@ -1,5 +1,6 @@
 """Shared token-resolution + cliche-lint audit, used by both the standalone
-audit script (``scripts/10_audit_deck_content.py``) and the render script
+audit script (``scripts/10_audit_deck_content.py``) and, via
+``src/render_orchestration.py``, the render path
 (``scripts/20_render_decks.py``) so the two never drift out of sync."""
 
 from __future__ import annotations
