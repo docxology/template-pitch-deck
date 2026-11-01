@@ -136,4 +136,4 @@ uv run python projects/templates/template_pitch_deck/scripts/30_audit_diligence.
 - [`README.md`](README.md)
 - [`manuscript/README.md`](manuscript/README.md)
 - [`src/README.md`](src/README.md)
-- Memory and decision records: [`../../../docs/rules/memory_and_decision_records.md`](../../../docs/rules/memory_and_decision_records.md)
+- Memory and decision records: [`../../../docs/rules/memory_and_decision_records.md`](https://github.com/docxology/template/blob/main/docs/rules/memory_and_decision_records.md)
