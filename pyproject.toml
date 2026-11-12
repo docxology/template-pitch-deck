@@ -13,7 +13,7 @@ version = "1.0.0"
 license = {text = "MIT"}
 description = "Reproducible short/medium/long PDF+PPTX pitch decks — token-validated, cliche-linted content built on infrastructure/rendering's generic slide-deck renderers. Flagship deck pitches template_template as meta-science research infrastructure."
 authors = [{name = "Daniel Ari Friedman", email = "daniel@activeinference.institute"}]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "pyyaml>=6.0.3",
     # `src/content_loader.py`/`src/render_orchestration.py` import
