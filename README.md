@@ -4,6 +4,8 @@ Reproducible, validated pitch-deck generation — one token-resolved content
 source renders to six real artifacts: short/medium/long decks, each as both
 PDF and PPTX.
 
+![Title slide of the short pitch deck rendered by this exemplar: “A template/ approach to Reproducible Generative Research — research infrastructure that documents itself, a case study for meta-science and science-integrity teams”](docs/readme_hero_title_slide.png)
+
 **Location:** git-tracked public exemplar at `projects/templates/template_pitch_deck/`
 in the [`docxology/template`](https://github.com/docxology/template) checkout. This
 standalone repository is that directory published as its own repo — its root **is**
