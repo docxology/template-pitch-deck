@@ -9,7 +9,7 @@ Content-domain logic only — no layout/drawing code (that lives in
 | `deck_tokens.py` | live repo introspection → `{{TOKEN}}` values (test counts, coverage, DOI, exemplar roster) |
 | `token_resolution.py` | `{{TOKEN}}` substitution, raises on any unresolved reference |
 | `cliche_lint.py` | word-boundary-safe pitch-deck cliché denylist |
-| `content_loader.py` | `manuscript/deck_content_*.yaml` → token-resolved `DeckContent`/`Slide` |
+| `content_loader.py` | `docs/manuscript/deck_content_*.yaml` → token-resolved `DeckContent`/`Slide` |
 | `deck_audit.py` | shared token+cliche audit, used by `scripts/10_audit_deck_content.py` and — via `render_orchestration.py` — the render script `scripts/20_render_decks.py` |
 | `diligence_audit.py` | fact-token → `source`-citation coverage check; wired both into `scripts/30_audit_diligence.py` and directly into `render_orchestration.py` as a render-blocking gate |
 | `standalone_slides.py` | per-slide standalone `.md` pages + deterministic per-slide QR deep-link URL computation |

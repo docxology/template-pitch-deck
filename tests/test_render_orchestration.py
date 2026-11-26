@@ -104,7 +104,7 @@ def test_render_one_length_writes_real_pdf(tmp_path: Path, repo_root):
         "short",
         project_root=tmp_path,
         repo_root=repo_root,
-        manuscript_dir=project_root() / "manuscript",
+        manuscript_dir=project_root() / "docs" / "manuscript",
         figures_dir=tmp_path / "figures",
         pdf_dir=tmp_path / "pdf",
         pptx_dir=tmp_path / "pptx",
@@ -204,7 +204,7 @@ def test_render_one_length_supports_second_configured_subject(tmp_path: Path, re
         "short",
         project_root=tmp_path,
         repo_root=repo_root,
-        manuscript_dir=project_root() / "manuscript",
+        manuscript_dir=project_root() / "docs" / "manuscript",
         figures_dir=tmp_path / "figures",
         pdf_dir=tmp_path / "pdf",
         pptx_dir=tmp_path / "pptx",
@@ -269,7 +269,7 @@ def test_rendered_output_actually_reflects_token_value_not_a_cached_default(tmp_
     from infrastructure.rendering.slide_deck import SlideBudget, filter_deck_for_budget, render_pdf
 
     tokens = build_deck_tokens(repo_root)
-    raw = load_deck_yaml(project_root() / "manuscript" / "deck_content_short.yaml")
+    raw = load_deck_yaml(project_root() / "docs" / "manuscript" / "deck_content_short.yaml")
 
     real_deck = filter_deck_for_budget(build_deck_content(raw, tokens), SlideBudget.SHORT)
     real_pdf = render_pdf(real_deck, tmp_path / "real.pdf")

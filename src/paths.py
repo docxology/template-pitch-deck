@@ -18,9 +18,17 @@ def locate_repo_root(from_path: Path) -> Path:
     raise FileNotFoundError(f"Could not locate template repo root from {from_path}")
 
 
+def manuscript_source_dir(project: Path) -> Path:
+    """Find the canonical manuscript, with support for older subject checkouts."""
+    canonical = project / "docs" / "manuscript"
+    if canonical.is_dir():
+        return canonical
+    return project / "manuscript"
+
+
 def project_root() -> Path:
     """Return this project's own root directory (``.../template_pitch_deck``)."""
     return Path(__file__).resolve().parent.parent
 
 
-__all__ = ["locate_repo_root", "project_root"]
+__all__ = ["locate_repo_root", "manuscript_source_dir", "project_root"]

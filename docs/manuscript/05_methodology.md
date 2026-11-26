@@ -5,7 +5,7 @@ than authored slide-by-slide.
 
 ## Deck construction
 
-`manuscript/deck_content_{short,medium,long}.yaml` are the single source of
+`docs/manuscript/deck_content_{short,medium,long}.yaml` are the single source of
 truth for slide content across three lengths. `src/deck_tokens.py` resolves
 live repository facts (`{{TOKEN}}` placeholders) from `template_template`'s own
 `manuscript/config.yaml` and the public exemplar roster — never hand-typed

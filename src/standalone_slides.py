@@ -19,6 +19,7 @@ it" starting from nothing but a photo of the slide.
 from __future__ import annotations
 
 import dataclasses
+import os
 import re
 import shutil
 from pathlib import Path
@@ -83,6 +84,7 @@ def standalone_slide_markdown(
     length: str,
     pitch_subject: str,
     source_base_url: str,
+    content_source: str | None = None,
 ) -> str:
     """Render one slide's standalone Markdown page."""
     lines: list[str] = []
@@ -109,9 +111,8 @@ def standalone_slide_markdown(
         f"[PDF](../../pdf/{pitch_subject}_pitch_{length}.pdf) · "
         f"[PPTX](../../pptx/{pitch_subject}_pitch_{length}.pptx)"
     )
-    lines.append(
-        f"**Deck content source:** [manuscript/deck_content_{length}.yaml](../../../manuscript/deck_content_{length}.yaml)"
-    )
+    content_source = content_source or f"../../../docs/manuscript/deck_content_{length}.yaml"
+    lines.append(f"**Deck content source:** [{Path(content_source).name}]({content_source})")
     lines.append("")
     lines.append(
         "*This page is generated — it exists so a QR code on the rendered slide "
@@ -128,6 +129,7 @@ def write_standalone_slides(
     pitch_subject: str,
     project_root: Path,
     source_base_url: str,
+    content_path: Path | None = None,
 ) -> list[Path]:
     """Write one standalone Markdown file per slide; return the written paths.
 
@@ -156,6 +158,7 @@ def write_standalone_slides(
             length=length,
             pitch_subject=pitch_subject,
             source_base_url=source_base_url,
+            content_source=os.path.relpath(content_path, standalone_dir) if content_path else None,
         )
         out_path.write_text(content, encoding="utf-8")
         written.append(out_path)
@@ -168,6 +171,7 @@ def attach_qr_urls(
     length: str,
     pitch_subject: str,
     source_base_url: str,
+    slides_base_url: str | None = None,
 ) -> DeckContent:
     """Return a new `DeckContent` with every slide's `qr_url` set to its own
     standalone page's deterministic GitHub URL.
@@ -175,13 +179,16 @@ def attach_qr_urls(
     Pure function: `Slide` is frozen, so each slide is replaced via
     `dataclasses.replace` rather than mutated.
     """
-    if not source_base_url:
+    base_url = slides_base_url if slides_base_url is not None else source_base_url
+    if not base_url:
         return deck
 
     new_slides = []
     for index, slide in enumerate(deck.slides, start=1):
         relpath = standalone_slide_relpath(pitch_subject, length, index)
-        qr_url = source_base_url.rstrip("/") + "/" + relpath
+        if slides_base_url is not None:
+            relpath = relpath.removeprefix("projects/templates/template_pitch_deck/")
+        qr_url = base_url.rstrip("/") + "/" + relpath
         new_slides.append(dataclasses.replace(slide, qr_url=qr_url))
 
     return DeckContent(

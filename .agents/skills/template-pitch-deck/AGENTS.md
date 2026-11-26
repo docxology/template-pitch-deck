@@ -31,5 +31,5 @@ Agents that need to:
 
 ## Cross-refs
 
-- Project root: [`../../..`](../../../).
+- Project root: [`../../..`](../../..).
 - Project contract: [`../../../AGENTS.md`](../../../AGENTS.md).

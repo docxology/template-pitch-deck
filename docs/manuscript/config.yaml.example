@@ -1,7 +1,7 @@
 # Template Pitch Deck Configuration Template
 # Copy this file to config.yaml and customize for your own pitch-deck project.
 # This is the "about this template" manuscript config — the deck content itself
-# (short/medium/long, PDF+PPTX) lives in manuscript/deck_content_*.yaml and
+# (short/medium/long, PDF+PPTX) lives in docs/manuscript/deck_content_*.yaml and
 # the live token builder (src/deck_tokens.py).
 
 # Consumed by: `infrastructure/rendering/pdf_renderer.py`
@@ -59,6 +59,7 @@ project_config:
     formats: ["pdf", "pptx"]
     # Deep-link base for every slide's `source` diligence citation.
     source_base_url: "https://github.com/your-org/your-repo/blob/main/"
+    slides_base_url: "https://github.com/your-org/your-deck-repo/blob/main/"
     # Black + white base plus 3 configurable highlight colors — set all three
     # the same for a monochrome accent, or distinct hex values for a
     # multi-accent palette.

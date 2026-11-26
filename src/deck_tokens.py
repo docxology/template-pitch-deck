@@ -19,6 +19,7 @@ from typing import cast
 
 import yaml
 from coverage_chart_data import COUNTS_ROW_RE
+from paths import manuscript_source_dir
 from infra_facts import build_infra_tokens
 
 from infrastructure.project.public_scope import public_project_names
@@ -50,11 +51,12 @@ def _read_counts_row(repo_root: Path, project_name: str) -> tuple[str, str]:
 
 def _read_pitch_subject_config(repo_root: Path, pitch_subject: str) -> dict:
     _validate_project_name(pitch_subject)
-    config_path = repo_root / "projects" / "templates" / pitch_subject / "manuscript" / "config.yaml"
+    subject = repo_root / "projects" / "templates" / pitch_subject
+    config_path = manuscript_source_dir(subject) / "config.yaml"
     return cast(dict, yaml.safe_load(config_path.read_text(encoding="utf-8")))
 
 
-def _read_own_deck_doi_status(repo_root: Path) -> str:
+def _read_own_deck_doi_status(deck_project: Path) -> str:
     """Return this deck's own DOI if reserved, else an honest not-yet-reserved status.
 
     Distinct from ``PITCH_SUBJECT_DOI`` (the DOI of the project being pitched,
@@ -64,7 +66,7 @@ def _read_own_deck_doi_status(repo_root: Path) -> str:
     the value updates automatically the moment a real Zenodo deposit is
     recorded there — no separate step required.
     """
-    own_config_path = repo_root / "projects" / "templates" / "template_pitch_deck" / "manuscript" / "config.yaml"
+    own_config_path = manuscript_source_dir(deck_project) / "config.yaml"
     own_config = cast(dict, yaml.safe_load(own_config_path.read_text(encoding="utf-8")))
     doi = (own_config.get("publication") or {}).get("doi", "")
     if doi:
@@ -131,19 +133,24 @@ def _published_platform_names_and_count(repo_root: Path, pitch_subject: str) -> 
     a hand-typed prose list that can drift out of sync with the number.
     """
     subject_root = repo_root / "projects" / "templates" / _validate_project_name(pitch_subject)
-    report = compile_publishing_status(subject_root)
+    report = compile_publishing_status(
+        subject_root, config_path=manuscript_source_dir(subject_root) / "config.yaml",
+    )
     published = [p for p in report.platforms if p.state is PublicationState.PUBLISHED]
     names = [_display_platform_name(p.name, p.reference) for p in published]
     return ", ".join(names), len(names)
 
 
-def build_deck_tokens(repo_root: Path, pitch_subject: str = "template_template") -> dict[str, str]:
+def build_deck_tokens(
+    repo_root: Path, pitch_subject: str = "template_template", *, deck_project: Path | None = None,
+) -> dict[str, str]:
     """Return the resolved ``{{TOKEN}}`` values for the ``pitch_subject`` deck.
 
     Args:
         repo_root: The template monorepo root (contains ``infrastructure/``).
         pitch_subject: Directory name under ``projects/templates/`` this deck
             pitches. Defaults to ``template_template``, the flagship content.
+        deck_project: Checkout supplying this deck's own publication metadata.
     """
     exemplar_names = public_project_names(repo_root)
     exemplar_count = len(exemplar_names)
@@ -172,7 +179,9 @@ def build_deck_tokens(repo_root: Path, pitch_subject: str = "template_template")
         "EXEMPLAR_COUNT_PLUS_ONE": str(exemplar_count + 1),
         "SECOND_EXEMPLAR_NAME": _second_example_name(exemplar_names, pitch_subject),
         "EXEMPLAR_ROSTER": _exemplar_roster(exemplar_names),
-        "PITCH_DECK_DOI_STATUS": _read_own_deck_doi_status(repo_root),
+        "PITCH_DECK_DOI_STATUS": _read_own_deck_doi_status(
+            deck_project or repo_root / "projects" / "templates" / "template_pitch_deck"
+        ),
     }
     tokens.update(build_infra_tokens(repo_root))
     return tokens

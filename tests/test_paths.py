@@ -56,7 +56,7 @@ def test_project_root_returns_template_pitch_deck_directory():
     root = project_root()
     assert root.name in ("template_pitch_deck", "template-pitch-deck")
     assert (root / "src").is_dir()
-    assert (root / "manuscript").is_dir()
+    assert (root / "docs" / "manuscript").is_dir()
 
 
 def test_render_script_help_is_read_only():

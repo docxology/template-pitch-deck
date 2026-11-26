@@ -1,7 +1,7 @@
 # AGENTS — manuscript/
 
 - Two distinct things live here: the pitch-deck content
-  (`deck_content_{short,medium,long}.yaml` + `config.yaml`'s `deck:` block)
+  (`deck_content_{short,medium,long}.yaml` + `config.yaml`'s `project_config.deck` block)
   and the standard "about this template" manuscript (`00_abstract.md` …
   `99_references.md`). Do not conflate them — the deck artifacts are not
   this manuscript's own combined PDF.

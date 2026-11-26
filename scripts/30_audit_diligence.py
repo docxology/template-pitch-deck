@@ -24,21 +24,25 @@ DECK_LENGTHS = ("short", "medium", "long")
 def main(argv: list[str] | None = None) -> int:
     from content_loader import load_deck_yaml
     from diligence_audit import diligence_rows, uncited_fact_slides
-    from paths import locate_repo_root
+    from paths import locate_repo_root, manuscript_source_dir
+    from render_orchestration import _subject_content_prefix, load_deck_config
 
     root = project_root()
     repo_root = locate_repo_root(root)
-    manuscript_dir = root / "manuscript"
+    manuscript_dir = manuscript_source_dir(root)
+    config = load_deck_config(root)
+    subject = str(config.get("pitch_subject", "template_template"))
+    content_prefix = _subject_content_prefix(config, subject)
 
     had_gap = False
     for length in DECK_LENGTHS:
-        content_path = manuscript_dir / f"deck_content_{length}.yaml"
+        content_path = manuscript_dir / f"{content_prefix}_{length}.yaml"
         raw = load_deck_yaml(content_path)
-        rows = diligence_rows(raw, repo_root)
+        rows = diligence_rows(raw, repo_root, deck_project=root)
         n_needs = sum(1 for r in rows if r["needs_citation"])
         n_cited = sum(1 for r in rows if r["needs_citation"] and r["has_citation"])
 
-        gaps = uncited_fact_slides(raw, repo_root)
+        gaps = uncited_fact_slides(raw, repo_root, deck_project=root)
         if gaps:
             had_gap = True
             for gap in gaps:

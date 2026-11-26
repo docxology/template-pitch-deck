@@ -22,6 +22,7 @@ renderer skips re-invoking ``mmdc`` when the ``.mmd`` sidecar already matches).
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -133,6 +134,17 @@ def main(argv: list[str] | None = None) -> int:
             continue
         logger.info("Wrote diagram: %s", output_path)
         print(output_path)
+
+    figures_dir.mkdir(parents=True, exist_ok=True)
+    # The manuscript cites the same architecture figure as the deck.
+    registry = {
+        "fig:deck-architecture": {
+            "filename": "two_layer_architecture.png",
+            "alt_text": "Diagram of shared rendering and validation infrastructure linked to project-owned content.",
+            "generated_by": "15_generate_diagrams.py",
+        },
+    }
+    (figures_dir / "figure_registry.json").write_text(json.dumps(registry, indent=2) + "\n", encoding="utf-8")
 
     return 0  # environment-dependent mmdc/Chrome absence is never a hard failure
 
