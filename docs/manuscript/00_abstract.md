@@ -11,7 +11,7 @@ live introspection of the repository it describes, every `{{TOKEN}}`
 substitution verified to have actually landed, and every sentence checked
 against a denylist of pitch-deck clichés.
 
-The flagship content pitches [`template_template`](../../template_template/), this
+The flagship content pitches [`template_template`](https://github.com/docxology/template_template), this
 monorepo's own autopoietic meta-project, to a meta-science and
 science-integrity audience — the kind of pitch an organization like the
 Active Inference Institute or COGSEC would actually hand to a funder. The

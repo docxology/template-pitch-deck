@@ -14,13 +14,15 @@ from pathlib import Path
 
 from token_resolution import find_tokens
 
+OWN_SOURCE_URL = "https://github.com/docxology/template-pitch-deck/blob/main/"
+
 FACT_TOKEN_PREFIXES: tuple[str, ...] = ("PITCH_SUBJECT_", "EXEMPLAR_", "SECOND_EXEMPLAR_", "INFRA_", "PITCH_DECK_")
 
 
 def slide_text_blob(slide: dict) -> str:
     """Concatenate every prose field on a raw slide dict for token scanning."""
     parts = [slide.get("title", ""), *slide.get("bullets", [])]
-    for field_name in ("stat_value", "stat_label", "quote_text", "quote_attribution"):
+    for field_name in ("stat_value", "stat_label", "quote_text", "quote_attribution", "notes"):
         if slide.get(field_name):
             parts.append(slide[field_name])
     return " ".join(parts)
@@ -39,7 +41,7 @@ def slide_cites_a_fact(slide: dict) -> bool:
     return any(token.startswith(prefix) for token in tokens for prefix in FACT_TOKEN_PREFIXES)
 
 
-def _citation_exists_on_disk(source: str, repo_root: Path | None) -> bool:
+def _citation_exists_on_disk(source: str, repo_root: Path | None, deck_project: Path | None) -> bool:
     """Whether ``source`` — an absolute URL, or a repo-relative path — resolves to something real.
 
     Absolute URLs (already checked reachable by nothing here — this project
@@ -51,6 +53,9 @@ def _citation_exists_on_disk(source: str, repo_root: Path | None) -> bool:
     raw content in isolation, with no repo context), existence is not
     checked — only non-emptiness — matching the prior behavior.
     """
+    if deck_project is not None and source.startswith(OWN_SOURCE_URL):
+        target = (deck_project / source.removeprefix(OWN_SOURCE_URL)).resolve()
+        return target.is_relative_to(deck_project.resolve()) and target.is_file()
     if repo_root is None:
         return True
     if source.startswith("http://") or source.startswith("https://"):
@@ -58,7 +63,9 @@ def _citation_exists_on_disk(source: str, repo_root: Path | None) -> bool:
     return (repo_root / source).exists()
 
 
-def diligence_rows(raw: dict, repo_root: Path | None = None) -> list[dict]:
+def diligence_rows(
+    raw: dict, repo_root: Path | None = None, *, deck_project: Path | None = None,
+) -> list[dict]:
     """One row per slide: 1-based index, title, whether it needs a citation, whether it has one.
 
     1-based to match every other slide-numbering convention in this project
@@ -70,7 +77,7 @@ def diligence_rows(raw: dict, repo_root: Path | None = None) -> list[dict]:
     for i, slide in enumerate(raw.get("slides", []), start=1):
         needs = slide_cites_a_fact(slide)
         source = slide.get("source", "")
-        has_citation = bool(source) and _citation_exists_on_disk(source, repo_root)
+        has_citation = bool(source) and _citation_exists_on_disk(source, repo_root, deck_project)
         rows.append(
             {
                 "index": i,
@@ -82,9 +89,11 @@ def diligence_rows(raw: dict, repo_root: Path | None = None) -> list[dict]:
     return rows
 
 
-def uncited_fact_slides(raw: dict, repo_root: Path | None = None) -> list[dict]:
+def uncited_fact_slides(
+    raw: dict, repo_root: Path | None = None, *, deck_project: Path | None = None,
+) -> list[dict]:
     """Rows for slides that reference a fact token but carry no valid `source` citation."""
-    return [row for row in diligence_rows(raw, repo_root) if row["needs_citation"] and not row["has_citation"]]
+    return [row for row in diligence_rows(raw, repo_root, deck_project=deck_project) if row["needs_citation"] and not row["has_citation"]]
 
 
 __all__ = ["FACT_TOKEN_PREFIXES", "slide_text_blob", "slide_cites_a_fact", "diligence_rows", "uncited_fact_slides"]

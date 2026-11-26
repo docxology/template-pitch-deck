@@ -134,7 +134,7 @@ slides:
   - kind: stat
     title: "Already public"
     stat_value: "{{PITCH_SUBJECT_PUBLISHED_PLATFORM_COUNT}} platforms"
-    stat_label: "Durable publication records already on file (concept DOI {{PITCH_SUBJECT_DOI}}): {{PITCH_SUBJECT_PUBLISHED_PLATFORM_NAMES}}. Licensed {{PITCH_SUBJECT_LICENSE}}."
+    stat_label: "Active platform records for the version in the reference. Concept DOI {{PITCH_SUBJECT_DOI}}. Licensed {{PITCH_SUBJECT_LICENSE}}."
     source: "projects/templates/template_template/manuscript/config.yaml"
 
   - kind: content
@@ -143,17 +143,18 @@ slides:
       - "Every number on the previous two slides was read live from {{PITCH_SUBJECT_NAME}}'s own manuscript/config.yaml and this monorepo's generated coverage report — not typed into this YAML file by hand."
       - "src/deck_tokens.py::build_deck_tokens is the function that did the reading; you can run it yourself and get the same numbers."
       - "A token-resolution audit fails this deck's own build if any of these values ever go missing."
-    source: "projects/templates/template_pitch_deck/src/deck_tokens.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/deck_tokens.py"
 
   - kind: section
     title: "The pattern generalizes"
 
   - kind: content
-    title: "The full roster, not one cherry-picked example"
+    title: "The public exemplar roster"
     bullets:
-      - "projects/templates/ holds all {{EXEMPLAR_COUNT}} public exemplars: {{EXEMPLAR_ROSTER}}."
-      - "{{SECOND_EXEMPLAR_NAME}} is called out here only as one concrete instance to point to — every name in that list is an independently-built exemplar following the identical two-layer architecture, not a hand-picked best case."
-      - "Neither exemplar's coverage gate or drift check required any special-casing to add — the contract is uniform across all {{EXEMPLAR_COUNT}} projects, and the folder itself is the evidence, not a claim about it."
+      - "The public roster lists {{EXEMPLAR_COUNT}} projects under projects/templates/."
+      - "{{SECOND_EXEMPLAR_NAME}} is one example of the shared two-layer architecture."
+      - "Follow the source link for every project in the generated roster."
+    notes: "Full roster at build time: {{EXEMPLAR_ROSTER}}."
     source: "docs/_generated/active_projects.md"
 
   - kind: content
@@ -211,7 +212,7 @@ slides:
   - kind: diagram
     title: "The integrity stack, gate by gate"
     figure: "integrity_stack.png"
-    source: "projects/templates/template_pitch_deck/src/token_resolution.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/token_resolution.py"
 
   - kind: content
     title: "Why gates instead of a style guide"
@@ -219,7 +220,7 @@ slides:
       - "A style guide is a request; a gate is a build failure — the difference between 'we ask reviewers to check citations' and 'the render script exits non-zero if one is missing'."
       - "Each gate here targets one specific failure mode it was built to catch: a stale token, a cliche phrase, an uncited fact, a non-reproducible artifact."
       - "None of these gates existed before this exemplar needed them — each was added because a real defect surfaced during this project's own development, not speculatively."
-    source: "projects/templates/template_pitch_deck/src/diligence_audit.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/diligence_audit.py"
 
   - kind: content
     title: "What happens when a gate fails"
@@ -227,7 +228,7 @@ slides:
       - "scripts/10_audit_deck_content.py exits non-zero on the first unresolved token or cliche hit — the render script never runs against unaudited content."
       - "scripts/30_audit_diligence.py exits non-zero if any fact-bearing slide lacks a source citation — a deck can be complete and still fail to ship."
       - "Fail-closed, not fail-open: an audit that cannot run is treated as a failure, never silently skipped and reported as a pass."
-    source: "projects/templates/template_pitch_deck/scripts/10_audit_deck_content.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/scripts/10_audit_deck_content.py"
 
   - kind: content
     title: "Coverage isn't a headline number"
@@ -252,7 +253,7 @@ slides:
       - "src/token_resolution.py fails the build on any unresolved double-curly-brace placeholder — the same discipline this slide's own {{PITCH_SUBJECT_NAME}} token was resolved by."
       - "src/cliche_lint.py and src/diligence_audit.py both run inside render_orchestration.py itself, before that deck length's own PDF/PPTX is written — a slide referencing a live-sourced token with no citation blocks that length's render, it does not just fail a separate, skippable check."
       - "None of these checks are generic infrastructure — they are this project's own src/, built specifically because a pitch deck is exactly the kind of document that tempts unverifiable claims."
-    source: "projects/templates/template_pitch_deck/src/diligence_audit.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/diligence_audit.py"
 
   - kind: content
     title: "The chain of custody: slide → QR → GitHub"
@@ -260,7 +261,7 @@ slides:
       - "Every slide in this deck carries its own QR code, linking to a standalone, real Markdown page for that exact slide under output/slides_standalone/."
       - "Once this output/ directory is committed and pushed, a photo of a projected or printed slide can be traced back to its precise source page on GitHub — not just to the deck as a whole. Locally, the generated page already exists; the QR only resolves once it is actually published."
       - "Mechanically, this is the same source-citation system with one more hop: a citation links out to evidence; the QR links to the slide's own generated page, which repeats that same citation."
-    source: "projects/templates/template_pitch_deck/src/standalone_slides.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/standalone_slides.py"
 
   - kind: content
     title: "Cite this deck"
@@ -269,24 +270,23 @@ slides:
       - "This deck's own DOI: {{PITCH_DECK_DOI_STATUS}}."
       - "That status is read live from this project's own manuscript/config.yaml at render time — the moment a real Zenodo deposit is recorded there, this slide's own text updates on the next regeneration, the same way every other fact in this deck does."
       - "This deck's DOI is deposited through the same infrastructure.publishing pipeline every other exemplar in this monorepo uses — nothing deck-specific to build, only a deposit to make."
-    source: "projects/templates/template_pitch_deck/manuscript/config.yaml"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/docs/manuscript/config.yaml"
 
   - kind: section
     title: "What's actually inside infrastructure/"
 
   - kind: content
-    title: "Not a black box"
+    title: "What the infrastructure contains"
     bullets:
-      - "{{INFRA_SUBPACKAGE_COUNT}} importable subpackages, {{INFRA_PYTHON_FILE_COUNT}} tracked Python files total under infrastructure/ — a real inventory anyone can `git ls-files` themselves, not a claimed abstraction."
-      - "The largest single subpackage, {{INFRA_LARGEST_SUBPACKAGE}}, holds {{INFRA_LARGEST_SUBPACKAGE_COUNT}} files — still a minority of the whole, not a monolith wearing a modular label."
-      - "Every number on this slide is computed live by src/infra_facts.py at render time, reusing the exact same counters docs/_generated/COUNTS.md is built from."
-      - "The chart on the next slide shows a slightly narrower total — it only counts files inside an importable subpackage, excluding {{INFRA_UNATTRIBUTED_FILE_COUNT}} top-level file(s) (infrastructure/__init__.py, mcp_server.py) that do not belong to any subpackage."
-    source: "projects/templates/template_pitch_deck/src/infra_facts.py"
+      - "{{INFRA_SUBPACKAGE_COUNT}} importable subpackages and {{INFRA_PYTHON_FILE_COUNT}} tracked Python files."
+      - "{{INFRA_LARGEST_SUBPACKAGE}} is the largest subpackage, with {{INFRA_LARGEST_SUBPACKAGE_COUNT}} files."
+      - "The chart excludes {{INFRA_UNATTRIBUTED_FILE_COUNT}} top-level files outside the subpackages."
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/infra_facts.py"
 
   - kind: diagram
     title: "infrastructure/, by subpackage"
     figure: "infra_subpackage_sizes.png"
-    source: "projects/templates/template_pitch_deck/src/infra_facts.py"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/src/infra_facts.py"
 
   - kind: content
     title: "Why partition it this way"

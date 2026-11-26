@@ -51,7 +51,7 @@ slides:
   - kind: content
     title: "Already public"
     bullets:
-      - "Concept DOI {{PITCH_SUBJECT_DOI}}, {{PITCH_SUBJECT_PUBLISHED_PLATFORM_COUNT}} durable publication records already on file: {{PITCH_SUBJECT_PUBLISHED_PLATFORM_NAMES}}."
+      - "Concept DOI {{PITCH_SUBJECT_DOI}}. Active platform records for the version in the reference: {{PITCH_SUBJECT_PUBLISHED_PLATFORM_COUNT}}."
       - "Licensed {{PITCH_SUBJECT_LICENSE}} — the introspection code, not only the prose, is available for a science-integrity team to audit directly."
     source: "projects/templates/template_template/manuscript/config.yaml"
 
@@ -69,7 +69,7 @@ slides:
       - "This pitch deck ({{PITCH_SUBJECT_NAME}}_pitch_short.pdf) is its own exemplar in the same monorepo — it has its own source, tests, and citable identity, separate from the DOI of the project it pitches."
       - "This deck's own DOI: {{PITCH_DECK_DOI_STATUS}}."
       - "Every slide also carries a QR code to its own standalone, citable page — see the deep-linking mechanism described later in the medium and long versions of this deck."
-    source: "projects/templates/template_pitch_deck/manuscript/config.yaml"
+    source: "https://github.com/docxology/template-pitch-deck/blob/main/docs/manuscript/config.yaml"
 
   - kind: content
     title: "The ask"

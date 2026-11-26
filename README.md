@@ -61,68 +61,15 @@ Publishing surface — 20 platforms, 2 published:
 
 _Keywords: pitch deck, slide generation, reproducible research communication, meta-science infrastructure, science integrity, token validation, PPTX, PDF rendering._
 
-_Status legend: ✅ published (durable identifier recorded in `config.yaml`) · 🔵 reserved (identifier reserved but not yet registered by final publication) · ⚪ available (adapter implemented and locally verifiable) · 🟡 planned. This block is generated — edit `manuscript/config.yaml`, then regenerate with `uv run python -m infrastructure.publishing.status_report --project <path> --write`._
+_Status legend: ✅ published (durable identifier recorded in `config.yaml`) · 🔵 reserved (identifier reserved but not yet registered by final publication) · ⚪ available (adapter implemented and locally verifiable) · 🟡 planned. This block is generated — edit `docs/manuscript/config.yaml`, then regenerate with `uv run python -m infrastructure.publishing.status_report --project <path> --write`._
 <!-- PUBLISHING-STATUS:END -->
 
-- Canonical renderer: [docxology/template](https://github.com/docxology/template) with `--project templates/template_pitch_deck`
-- Tracked outputs: [`output/`](output/) in this project; public output files above 50 MB stay out of git.
+## Build and author
 
-## Overview
+See the [documentation index](docs/README.md), [pinned build workflow](docs/build.md),
+and [authoring guide](docs/authoring.md). The [canonical manuscript](docs/manuscript/)
+contains the two subjects' slide sources, the descriptive paper, and its bibliography.
 
-- **Rendering primitives (generic, new to this repo):** `infrastructure/rendering/slide_deck.py` (ReportLab PDF) and `infrastructure/rendering/pptx_deck.py` (python-pptx, opt-in) — both consume the same `DeckContent` model and the same font-size constants (imported, not re-declared), so a PDF and a PPTX built from identical content carry identical slide counts, text, and type sizing. The PPTX renderer rewrites OOXML ZIP metadata to fixed timestamps after save, making identical decks byte-identical across runs. `infrastructure/rendering/mermaid_figure.py` renders standalone Mermaid diagrams to PNG for embedding.
-- **Theme:** black + white base plus three configurable highlight colors (`infrastructure.rendering.slide_deck.DeckTheme`), set under `manuscript/config.yaml`'s `project_config.deck.theme` block. Ships monochrome red by default; `config.yaml.example` demonstrates a distinct multi-accent palette.
-- **Slide variety:** six layout kinds — `title`, `section`, `content`, `stat` (large highlighted number + label), `quote` (pull-quote + attribution), `diagram` (full-bleed figure) — sized for real presentation use (36pt titles, 18pt body, 68pt stat callouts), not default-document body text.
-- **Six real visualizations, two chart families:** `scripts/15_generate_diagrams.py` renders three Mermaid flowcharts (two-layer architecture, the actual 10-stage core pipeline, a 9-node integrity-gate stack — every node names a real file/script in this repo); `scripts/16_generate_charts.py` renders three matplotlib charts via `src/chart_rendering.py` — a per-exemplar coverage bar chart, a test-count-vs-coverage scatter, and a donut chart of `infrastructure/`'s own subpackage sizes (`src/infra_facts.py`, live `git ls-files` counts). All six read real repo state; none are decorative-only shapes.
-- **Diligence deep-links, two layers deep, and gate-enforced:** any slide may carry a `source` citation (a repo-relative path); `manuscript/config.yaml`'s `project_config.deck.source_base_url` turns it into a real clickable hyperlink in both the PDF and the PPTX. `src/diligence_audit.py`'s citation-coverage check runs both as a standalone script (`scripts/30_audit_diligence.py`) AND inside `render_orchestration.py` itself — an uncited fact-bearing slide blocks that deck length's render, not just a separate skippable check. **Every slide also gets its own scannable QR code** (`src/standalone_slides.py`) pointing at that exact slide's own standalone, real, citable Markdown page under `output/slides_standalone/` — so a photo of a projected or printed slide traces back to its precise source, not just the deck as a whole (the QR resolves once `output/` is committed and pushed; it's a real generated file locally either way).
-- **A "Scientific integrity, by construction" content section** (medium/long decks): enumerates the project's own real integrity mechanisms — CI-enforced no-mocks policy, coverage floors, the reproducibility invariant, the gate stack, and the per-exemplar coverage chart — reviewed by both an Advisor second opinion and a Cato cross-vendor audit before shipping (see `ISA.md` Decisions for what each caught and how it was fixed).
-- **A "What's actually inside infrastructure/" content section** (medium/long decks): live subpackage/file counts (`src/infra_facts.py`, reusing the same introspection `docs/_generated/COUNTS.md` is built from) plus the subpackage-size donut chart — the shared infra layer is a real, inspectable inventory, not an asserted abstraction.
-- **An expanded "ask"** (all three lengths): adoption, funding conversations, and consulting availability, stated plainly with no fabricated numbers or committed terms.
-- **Token resolution + honesty:** `src/deck_tokens.py::build_deck_tokens` reads every fact live from the repository (test counts, coverage %, DOI, exemplar roster, infra subpackage/file counts — see `docs/_generated/COUNTS.md`, `infrastructure/project/public_scope.py`, and `src/infra_facts.py`); `src/token_resolution.py` raises if any `{{TOKEN}}` in the content source has no resolved value.
-- **Cliché lint:** `src/cliche_lint.py` runs a word-boundary-safe denylist of pitch-deck stock phrases over every resolved slide.
-
-## Quick Start
-
-Both the scripts and the test suite import `infrastructure.*`, which ships in the
-[`docxology/template`](https://github.com/docxology/template) monorepo — not in this
-standalone repository. Run them from that checkout (paths are monorepo-relative):
-
-```bash
-uv run python projects/templates/template_pitch_deck/scripts/10_audit_deck_content.py
-uv run python projects/templates/template_pitch_deck/scripts/15_generate_diagrams.py
-uv run python projects/templates/template_pitch_deck/scripts/16_generate_charts.py
-uv run python projects/templates/template_pitch_deck/scripts/20_render_decks.py
-uv run python projects/templates/template_pitch_deck/scripts/30_audit_diligence.py
-
-uv run pytest projects/templates/template_pitch_deck/tests/ \
-  --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90 -v
-
-./run.sh --project templates/template_pitch_deck --pipeline --core-only
-```
-
-PPTX rendering requires the monorepo's opt-in dependency group: `uv sync --group rendering-pptx`. Without it, the render script still produces the three PDFs and logs a warning instead of failing.
-
-## Directory Structure
-
-| Folder | Contents |
-|--------|----------|
-| `manuscript/` | `deck_content_{short,medium,long}.yaml` (the pitch content), `config.yaml` (+ `.example`), plus the standard "about this template" manuscript chapters |
-| `scripts/` | Thin orchestrators: `10_audit_deck_content.py`, `15_generate_diagrams.py`, `16_generate_charts.py`, `20_render_decks.py`, `30_audit_diligence.py` |
-| `src/` | Content loading, token resolution, cliché lint, diligence audit, repo-fact sourcing — no layout/drawing code |
-| `tests/` | Full suite, 90%+ coverage on `src/` |
-| `output/` | `pdf/`, `pptx/`, `figures/`, `slides_standalone/` — six deck artifacts, rendered diagrams, and one Markdown page per slide |
-
-## Pipeline Outputs
-
-| Artifact | Path |
-|----------|------|
-| Short/medium/long PDF decks | `output/pdf/template_template_pitch_{short,medium,long}.pdf` |
-| Short/medium/long PPTX decks | `output/pptx/template_template_pitch_{short,medium,long}.pptx` |
-| Rendered diagrams | `output/figures/*.png` |
-| Per-slide standalone pages (QR deep-link targets) | `output/slides_standalone/template_template_{short,medium,long}/slide_NN.md` |
-
-## Template integrity
-
-- Forward backlog: [`TODO.md`](TODO.md).
-- Copy-and-customize config: [`manuscript/config.yaml.example`](manuscript/config.yaml.example).
-- Project validation (monorepo root): `uv run pytest projects/templates/template_pitch_deck/tests/ --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90`.
-- Repo drift validation (monorepo root): `uv run python scripts/audit/check_template_drift.py --strict`.
+The tracked [output snapshot](output/) contains release artifacts. A fresh local
+build uses the selected reference checkout's evidence and generates its own
+PDF, PPTX, manuscript HTML, and per-slide Markdown pages.

@@ -7,6 +7,7 @@ import pytest
 from deck_tokens import (
     _display_platform_name,
     _read_own_deck_doi_status,
+    _published_platform_names_and_count,
     _second_example_name,
     _validate_project_name,
     build_deck_tokens,
@@ -75,14 +76,14 @@ def test_read_own_deck_doi_status_returns_real_doi_when_present(tmp_path):
         "publication:\n  doi: '10.5281/zenodo.99999999'\n",
         encoding="utf-8",
     )
-    assert _read_own_deck_doi_status(tmp_path) == "10.5281/zenodo.99999999"
+    assert _read_own_deck_doi_status(config_dir.parent) == "10.5281/zenodo.99999999"
 
 
 def test_read_own_deck_doi_status_honest_when_publication_block_empty(tmp_path):
     config_dir = tmp_path / "projects" / "templates" / "template_pitch_deck" / "manuscript"
     config_dir.mkdir(parents=True)
     (config_dir / "config.yaml").write_text("publication: {}\n", encoding="utf-8")
-    status = _read_own_deck_doi_status(tmp_path)
+    status = _read_own_deck_doi_status(config_dir.parent)
     assert "not yet reserved" in status
 
 
@@ -145,31 +146,36 @@ def test_display_platform_name_falls_back_for_unknown_slug():
     assert _display_platform_name("some_new_platform", "https://example.org/") == "Some New Platform"
 
 
-def test_published_platform_names_labels_testpypi_as_sandbox_honestly(repo_root):
-    """Real reproduction: template_template's actual pypi listing is on
-    test.pypi.org (verified by reading its config directly), which a bare
-    'PyPI' label would misrepresent as production PyPI — a checkable,
-    embarrassing false-advertising risk a skeptical reviewer would catch
-    (red-team finding, 2026-07-09)."""
-    tokens = build_deck_tokens(repo_root, pitch_subject="template_template")
-    names = tokens["PITCH_SUBJECT_PUBLISHED_PLATFORM_NAMES"]
-    assert "PyPI (sandbox)" in names
-    assert "PyPI," not in names  # never claim bare "PyPI" alongside the sandbox one
+def test_published_platform_names_labels_testpypi_as_sandbox_honestly(tmp_path):
+    config = tmp_path / "projects/templates/subject/docs/manuscript/config.yaml"
+    config.parent.mkdir(parents=True)
+    config.write_text(
+        "publication:\n"
+        "  github_repository: example/subject\n"
+        "  doi: 10.5281/zenodo.99999990\n"
+        "  version_doi: 10.5281/zenodo.99999991\n"
+        "  published_artifacts:\n"
+        "    pypi: https://test.pypi.org/project/subject/1.0/\n",
+        encoding="utf-8",
+    )
+    display, count = _published_platform_names_and_count(tmp_path, "subject")
+    names = display.split(", ")
+    assert set(names) == {"PyPI (sandbox)", "Zenodo", "GitHub"}
+    assert count == len(names)
+
+    config.write_text(
+        config.read_text(encoding="utf-8")
+        + '  release_status: unreleased\n  last_published_version: "1.0"\n',
+        encoding="utf-8",
+    )
+    assert _published_platform_names_and_count(tmp_path, "subject") == ("", 0)
 
 
 def test_published_platform_names_count_matches_the_count_token(repo_root):
-    """Proof-of-detection for the red-team-flagged double-counting bug: the
-    number of comma-joined platform NAMES must exactly equal the COUNT token
-    — both are now derived from the same `compile_publishing_status()` call,
-    so they cannot silently diverge the way the prior ad hoc formula could."""
     tokens = build_deck_tokens(repo_root, pitch_subject="template_template")
     names = [n.strip() for n in tokens["PITCH_SUBJECT_PUBLISHED_PLATFORM_NAMES"].split(",") if n.strip()]
     assert len(names) == int(tokens["PITCH_SUBJECT_PUBLISHED_PLATFORM_COUNT"])
-    # Zenodo must be counted once (not twice for concept-DOI + version-DOI),
-    # and github must be credited if github_repository is set — the exact
-    # double-count/never-counted bug this replaces.
-    assert names.count("Zenodo") == 1
-    assert "GitHub" in names
+    assert len(set(names)) == len(names)
 
 
 def test_validate_project_name_accepts_real_names():

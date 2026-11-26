@@ -1,6 +1,6 @@
 # Template Pitch Deck Configuration
 # This is the "about this template" manuscript config — the deck content itself
-# (short/medium/long, PDF+PPTX) lives in manuscript/deck_content_*.yaml and
+# (short/medium/long, PDF+PPTX) lives in docs/manuscript/deck_content_*.yaml and
 # live tokens from src/deck_tokens.py, and is NOT rendered through this LaTeX/pandoc
 # manuscript path. This config exists to satisfy the standard exemplar
 # registration contract (infrastructure/project/drift/checks_exemplar.py) and
@@ -61,7 +61,7 @@ testing:
   max_project_test_failures: 0
 
 # Project-owned deck settings live under the schema's supported passthrough
-# namespace. `pitch_subject` selects the manuscript/deck_content_*.yaml + live
+# namespace. `pitch_subject` selects the docs/manuscript/deck_content_*.yaml + live
 # token pair; additional project-specific settings belong beside `deck` here.
 project_config:
   deck:
@@ -77,6 +77,7 @@ project_config:
     # repo-relative path like "CLAUDE.md" or "infrastructure/project/public_scope.py")
     # — resolved into a clickable GitHub blob URL by scripts/20_render_decks.py.
     source_base_url: "https://github.com/docxology/template/blob/main/"
+    slides_base_url: "https://github.com/docxology/template-pitch-deck/blob/main/"
     # Black + white base plus 3 configurable highlight colors
     # (infrastructure.rendering.slide_deck.DeckTheme). All three highlights are
     # the same red here (monochrome accent); set distinct hex values for a

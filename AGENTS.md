@@ -4,8 +4,7 @@ Technical specification for the pitch-deck generation exemplar.
 
 **Location:** [`projects/templates/template_pitch_deck/`](.) — public canonical exemplar
 (`infrastructure.project.public_scope`). This standalone repository root is that project
-directory; every command below runs from the `docxology/template` monorepo root, which is
-the checkout that owns `infrastructure/` and the sibling paths.
+directory; shared infrastructure and reference facts come from the pinned checkout in the [build guide](docs/build.md).
 
 ## Purpose
 
@@ -18,7 +17,7 @@ cliché, and every claim optionally deep-linked to its source file.
 
 ```text
 template_pitch_deck/
-├── manuscript/
+├── docs/manuscript/
 │   ├── deck_content_{short,medium,long}.yaml   # the pitch content itself
 │   ├── config.yaml                              # project_config.deck: theme, source URL, subject
 │   └── 00_abstract.md … 99_references.md        # standard "about this template" manuscript
@@ -115,15 +114,7 @@ not just the separate script.
 
 ## Verification
 
-From the template repo root:
-
-```bash
-uv run pytest projects/templates/template_pitch_deck/tests/ \
-  --cov=projects/templates/template_pitch_deck/src --cov-fail-under=90 -v
-uv run python projects/templates/template_pitch_deck/scripts/10_audit_deck_content.py
-uv run python projects/templates/template_pitch_deck/scripts/20_render_decks.py
-uv run python projects/templates/template_pitch_deck/scripts/30_audit_diligence.py
-```
+Follow the [pinned build and verification workflow](docs/build.md).
 
 ## Patterns
 
@@ -134,6 +125,6 @@ uv run python projects/templates/template_pitch_deck/scripts/30_audit_diligence.
 ## See also
 
 - [`README.md`](README.md)
-- [`manuscript/README.md`](manuscript/README.md)
-- [`src/README.md`](src/README.md)
+- [`manuscript/README.md`](docs/manuscript/README.md)
+- [`src/README.md`](docs/source.md)
 - Memory and decision records: [`../../../docs/rules/memory_and_decision_records.md`](https://github.com/docxology/template/blob/main/docs/rules/memory_and_decision_records.md)

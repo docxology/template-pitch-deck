@@ -18,6 +18,7 @@ from standalone_slides import attach_qr_urls, write_standalone_slides
 
 from infrastructure.core.exceptions import RenderingError
 from infrastructure.rendering.slide_deck import DeckTheme, SlideBudget, filter_deck_for_budget, render_pdf
+from paths import manuscript_source_dir
 
 DECK_LENGTHS: tuple[str, ...] = ("short", "medium", "long")
 _BUDGETS = {"short": SlideBudget.SHORT, "medium": SlideBudget.MEDIUM, "long": SlideBudget.LONG}
@@ -40,7 +41,7 @@ class DiligenceAuditFailure(RuntimeError):
 
 def load_deck_config(project_root: Path) -> dict:
     """Load canonical nested deck settings, with legacy root-key compatibility."""
-    config_path = project_root / "manuscript" / "config.yaml"
+    config_path = manuscript_source_dir(project_root) / "config.yaml"
     config = cast(dict, yaml.safe_load(config_path.read_text(encoding="utf-8")))
     project_config = config.get("project_config", {})
     if isinstance(project_config, dict) and isinstance(project_config.get("deck"), dict):
@@ -82,6 +83,7 @@ def render_one_length(
     render_pptx_fn,
     logger: logging.Logger,
     content_prefix: str = "deck_content",
+    slides_base_url: str | None = None,
 ) -> list[Path]:
     """Audit, resolve, budget-filter, and render one deck length. Returns written paths.
 
@@ -101,7 +103,10 @@ def render_one_length(
     if not result.ok:
         raise DeckAuditFailure(f"[{length}] audit failed: {result.unresolved_error or result.cliche_hits}")
 
-    uncited = uncited_fact_slides(raw, repo_root)
+    source_root = manuscript_dir.parent
+    if source_root.name == "docs":
+        source_root = source_root.parent
+    uncited = uncited_fact_slides(raw, repo_root, deck_project=source_root)
     if uncited:
         titles = ", ".join(row["title"] or f"slide {row['index']}" for row in uncited)
         raise DiligenceAuditFailure(
@@ -118,10 +123,12 @@ def render_one_length(
         pitch_subject=pitch_subject,
         project_root=project_root,
         source_base_url=source_base_url,
+        content_path=content_path,
     )
     logger.info("[%s] wrote %d standalone slide page(s)", length, len(standalone_paths))
     deck_with_qr = attach_qr_urls(
-        budgeted_deck, length=length, pitch_subject=pitch_subject, source_base_url=source_base_url
+        budgeted_deck, length=length, pitch_subject=pitch_subject, source_base_url=source_base_url,
+        slides_base_url=slides_base_url,
     )
 
     written: list[Path] = []
@@ -152,7 +159,8 @@ def _subject_content_prefix(deck_config: dict, pitch_subject: str) -> str:
 
 
 def _preflight_all_lengths(
-    *, manuscript_dir: Path, repo_root: Path, tokens: dict[str, str], content_prefix: str
+    *, manuscript_dir: Path, repo_root: Path, tokens: dict[str, str], content_prefix: str,
+    deck_project: Path | None = None,
 ) -> None:
     """Audit every configured length before any generated output is written."""
     for length in DECK_LENGTHS:
@@ -160,7 +168,7 @@ def _preflight_all_lengths(
         result = audit_deck(length, raw, tokens)
         if not result.ok:
             raise DeckAuditFailure(f"[{length}] audit failed: {result.unresolved_error or result.cliche_hits}")
-        uncited = uncited_fact_slides(raw, repo_root)
+        uncited = uncited_fact_slides(raw, repo_root, deck_project=deck_project)
         if uncited:
             titles = ", ".join(row["title"] or f"slide {row['index']}" for row in uncited)
             raise DiligenceAuditFailure(
@@ -175,7 +183,7 @@ def render_all_decks(
     pitch_subject: str | None = None,
 ) -> list[Path]:
     """Render all three lengths. Raises `DeckAuditFailure`/`RenderingError` on any failure."""
-    manuscript_dir = project_root / "manuscript"
+    manuscript_dir = manuscript_source_dir(project_root)
     figures_dir = project_root / "output" / "figures"
     pdf_dir = project_root / "output" / "pdf"
     pptx_dir = project_root / "output" / "pptx"
@@ -186,13 +194,14 @@ def render_all_decks(
     theme = _resolve_theme(deck_config)
     source_base_url = deck_config.get("source_base_url", "")
     selected_subject = pitch_subject or str(deck_config.get("pitch_subject", "template_template"))
-    tokens = build_deck_tokens(repo_root, pitch_subject=selected_subject)
+    tokens = build_deck_tokens(repo_root, pitch_subject=selected_subject, deck_project=project_root)
     content_prefix = _subject_content_prefix(deck_config, selected_subject)
     _preflight_all_lengths(
         manuscript_dir=manuscript_dir,
         repo_root=repo_root,
         tokens=tokens,
         content_prefix=content_prefix,
+        deck_project=project_root,
     )
 
     render_pptx_fn = _try_import_render_pptx()
@@ -219,6 +228,7 @@ def render_all_decks(
                 render_pptx_fn=render_pptx_fn,
                 logger=logger,
                 content_prefix=content_prefix,
+                slides_base_url=deck_config.get("slides_base_url"),
             )
         )
 

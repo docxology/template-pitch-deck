@@ -8,9 +8,7 @@
 ## Key modules (pointer, not duplication)
 
 Authoritative per-module rules live in each package's own `README.md` /
-`AGENTS.md` (`src/`, `scripts/`, `tests/`, `manuscript/`). The root
-`../AGENTS.md` holds the technical specification; `../STANDALONE.md`
-documents standalone operation.
+`AGENTS.md` (`src/`, `scripts/`, `tests/`, `manuscript/`). The [root agent guide](../AGENTS.md) holds the technical specification. See [standalone operation](standalone.md) and [verification](build.md).
 
 ## Conventions observed in this repo
 

@@ -16,6 +16,8 @@ model shared by both renderers:
   `MEDIUM` ≤ 38, `LONG` ≤ 58) and `filter_deck_for_budget`, a pure function
   that truncates a deck to a budget without mutating slide order or content.
 
+![Two-layer architecture. A reference layer provides shared rendering and validation. The project layer supplies slide content and subject-specific facts.](../../output/figures/two_layer_architecture.png){#fig:deck-architecture}
+
 ## Two renderers, one model
 
 `infrastructure/rendering/slide_deck.render_pdf` draws each slide directly
@@ -40,7 +42,7 @@ PPTX slide count.
 ## Project-side content
 
 `projects/templates/template_pitch_deck/src/` holds only pitch-deck-domain
-code — loading `manuscript/deck_content_*.yaml` into `DeckContent` objects,
+code — loading `docs/manuscript/deck_content_*.yaml` into `DeckContent` objects,
 resolving `{{TOKEN}}` values, and linting for cliché — never layout/drawing
 code. `scripts/20_render_decks.py` is the thin orchestrator that ties content
 loading, token resolution, cliché linting, and the two infra renderers
