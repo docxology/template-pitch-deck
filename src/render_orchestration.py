@@ -208,7 +208,8 @@ def render_all_decks(
     if render_pptx_fn is None:
         logger.warning(
             "python-pptx not installed — skipping PPTX rendering. "
-            "Install with `uv sync --group rendering-pptx` for all six artifacts."
+            "Use the standalone `rendering-pptx` extra or Template's "
+            "`rendering-pptx` dependency group for all six artifacts."
         )
 
     written: list[Path] = []
