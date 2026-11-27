@@ -20,13 +20,14 @@ renderer="$PWD"
 mkdir -p projects/working
 git clone https://github.com/docxology/template-pitch-deck.git projects/working/template-pitch-deck
 cd projects/working/template-pitch-deck
-uv sync --locked --extra dev --python 3.14
-uv pip install --python .venv/bin/python python-pptx==1.0.2
+uv sync --locked --extra dev --extra rendering-pptx --python 3.14
 unset NODE_PATH NODE_OPTIONS
 ```
 
-Install the PPTX provider in the project's environment so the tests exercise
-PDF/PPTX parity. The shared renderer has its own environment.
+The optional `rendering-pptx` extra installs the pinned provider in the
+project environment for the PDF/PPTX parity checks. A project environment
+without that extra supports the PDF-only path. The shared renderer has its
+own environment.
 
 ## Run the native tests and build the decks
 
